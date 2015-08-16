@@ -1,0 +1,20 @@
+Program: The course aims at teaching how basic rigid body physics can be simulated in real-time on a modern computer.
+The objective is for students to be able to: (i) understand the basic equations of rigid body physics; (ii) know how to translate those equations into a working physics engine; and (iii) know the trade-offs that a physics engine must chose between. The topics covered are:
+- linear kinematics
+- rotational kinematics and momentum of inertia
+- numerical drift, differential equations, and matrix/quaternion normalization
+- separating axis test
+- clipping, edge/edge, edge/plane, vertex/plane intersections, and contact manifold generation
+- collision response with impulse-based methods through setting up and numerical solution of a system of linear equations
+- algorithms for the narrow phase of collision detection
+At the end of the course the students will be able to program a robust and general purpose physics engine.
+
+
+
+Number of hours: 14 hours of frontal lectures, approx. 70 hours of study time
+
+
+Final test: a prototype physics engine capable kinematics simulation, collision detection, and collision response.
+
+
+Level: PhD course

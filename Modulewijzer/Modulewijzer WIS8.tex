@@ -1,0 +1,119 @@
+\documentclass[titlepage, a4paper, openbib, 10pt]{article}
+
+%#####################################
+%Usepackages en installingen
+\usepackage[top=1in, bottom=1in, left=1in, right=1in]{geometry}
+\usepackage[pdftex]{graphicx}
+\usepackage{fancyhdr}
+\usepackage{paralist}
+\usepackage{sectionbox}
+\usepackage[dutch]{babel}
+\usepackage{chngcntr}
+\usepackage{cite}
+\usepackage{url}
+\usepackage{makeidx}
+\usepackage{enumitem}
+\usepackage{tocloft}
+\usepackage{listliketab}
+\usepackage[table]{xcolor}
+\usepackage{tabularx}
+\usepackage{epsfig}
+\usepackage{pdflscape}
+\usepackage{pdfpages}
+\usepackage{float}
+\usepackage{multirow}
+\usepackage{rotating}
+\usepackage[utf8]{inputenc}
+\usepackage{listings}
+\lstset{language=C,
+basicstyle=\ttfamily\footnotesize,
+frame=shadowbox,
+mathescape=true,
+showstringspaces=false,
+showspaces=false,
+breaklines=true}
+
+%\usepackage{showframe} %tmp
+%#####################################
+%Nieuwe commando's
+\newcommand{\HRule}{\rule{\linewidth}{1pt}}
+\newcommand{\organisatie}{\uppercase{Hogeschool Rotterdam / CMI}}
+\newcommand{\modulenaam}{Numerical approximation for physics simulations}
+\newcommand{\modulecode}{\uppercase{TINWIS01-8}}
+\newcommand{\stdPunten}{2 ects}
+\renewcommand{\author}{Gerard van Kruining, Giuseppe Maggiore}
+
+\definecolor{lichtGrijs}{RGB}{169,169,169}
+
+
+
+%#####################################
+%Index en styling
+\setlength{\cftbeforesecskip}{10pt}
+\setlength\parindent{0pt}
+\makeindex
+\graphicspath{{img}}
+\counterwithin{figure}{subsection}
+\pagestyle{fancy}
+\setcounter{secnumdepth}{5}
+\setcounter{tocdepth}{5}
+
+%#####################################
+%     Alles voor header/footer
+\fancyhf[HL]{\nouppercase{\textit{\leftmark}}}
+\setlength{\headheight}{36pt}
+\lhead{\uppercase{\footnotesize Module guide}}
+\chead{\footnotesize \organisatie}
+\rhead{\includegraphics[width=0.09\textwidth]{img/logo}}
+
+\lfoot{\scriptsize \modulenaam}
+\cfoot{\scriptsize \today}
+\rfoot{\small \thepage}
+
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+%#####################################
+
+\begin{document}
+
+%#####################################
+%Titlepage
+\begin{titlepage}
+\thispagestyle{fancy}
+\input{tex/Voorblad}
+\end{titlepage}
+
+%####### Contentpagina ########
+%\renewcommand{\baselinestretch}{1.5}\normalsize
+%\tableofcontents
+%\newpage
+%\listoffigures
+%\newpage
+%\listoftables
+%\newpage
+
+%########### Inhoud ###########
+
+\shadowsectionbox
+\include{tex/Modulebeschrijving}
+\newpage
+\include{tex/AlgemeneOmschrijving}
+\newpage
+\include{tex/Programma}
+\newpage
+\include{tex/Toetsing}
+%##############################
+
+\newpage
+%\bibliographystyle{plain}
+%\bibliography{references}
+%\newpage
+\input{tex/Bijlage1}
+%\newpage
+%\input{tex/Bijlage2}
+%\newpage
+%\input{tex/Bijlage3}
+\printindex
+
+
+\end{document}

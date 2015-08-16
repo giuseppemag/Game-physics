@@ -1,0 +1,378 @@
+\documentclass{beamer}
+\usetheme{Warsaw}
+\usepackage{nhtvslides}
+\usepackage{graphicx}
+\usepackage{listings}
+\lstset{language=CAML,
+basicstyle=\ttfamily\footnotesize,
+frame=shadowbox,
+breaklines=true}
+\usepackage[utf8]{inputenc}
+
+\title{Integration, rotation matrices, and quaternions}
+
+\author{Dr. Giuseppe Maggiore}
+
+\institute{NHTV University of Applied Sciences \\ 
+Breda, Netherlands}
+
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{frame}{Table of contents}
+\tableofcontents
+\end{frame}
+
+\section{Integration and rotation}
+\begin{slide}{Integration and rotation}{Integration and rotation}{
+\item We integrate $L$ from $\tau$
+\item We integrate $w$ from $L$ and $J^-1$
+\item We integrate $R$ from $w$
+}\end{slide}
+
+\begin{slide}{Integration and rotation}{Issues}{
+\item \textit{Issue 1:} recomputing $J$ from every particle of the body and at every tick is too slow
+\item \textit{Issue 2:} integrating $R$ slowly ``breaks it'', meaning that $[T\ N\ B]$ is not a rotation anymore
+}\end{slide}
+
+\section{Caching J}
+\begin{slide}{Caching J}{Issue 1: body shape}{
+\item $J$ represents the tendency of the body to resist rotation
+\item But the body just moves and rotates, it does not change shape
+\item We should be able to simply recompute $J$ from its initial value and the rotation
+}\end{slide}
+
+\begin{frame}{Caching J}
+\begin{block}{$J$ from $J_{body}$}
+\begin{eqnarray}
+J &=& \sum_i(|r_i(t)|^2I - r_i(t) r_i^T(t)) \\
+&=& \sum_i(|R r_i(t_0)|^2I - R r_i(t_0) r_i^T(t_0) R^T) \\
+&=& \sum_i(|r_i(t_0)|^2I - R r_i(t_0) r_i^T(t_0) R^T) \\ % rotation keeps length
+&=& \sum_i(|r_i(t_0)|^2 R R^T - R r_i(t_0) r_i^T(t_0) R^T) \\ % R R^T = I
+&=& \sum_i(R |r_i(t_0)|^2 R^T - R r_i(t_0) r_i^T(t_0) R^T) % scalar and matrix multiplication is commutative
+\end{eqnarray}
+\end{block}
+\end{frame}
+
+\begin{frame}{Caching J}
+\begin{block}{$J$ from $J_{body}$}
+\begin{eqnarray}
+J &=& \sum_i(R |r_i(t_0)|^2 R^T - R r_i(t_0) r_i^T(t_0) R^T) \\ % scalar and matrix multiplication is commutative
+&=& \sum_i R(|r_i(t_0)|^2 - r_i(t_0) r_i^T(t_0)) R^T \\ % grouping
+&=& R \left( \sum_i (|r_i(t_0)|^2 - r_i(t_0) r_i^T(t_0)) \right) R^T \\ % grouping
+&=& R J_{body} R^T
+\end{eqnarray}
+\end{block}
+\end{frame}
+
+\begin{slide}{Caching J}{$J^{-1}$ from $J_{body}{-1}$}{
+\item We need $J^{-1}$ more than $J$
+\item We can compute it without an inversion though
+\item We compute (just once) $J_{body}^{-1}$
+\item $J^{-1} (R J_{body} R^T)^{-1} = R J_{body}^{-1} R^T$
+}\end{slide}
+
+\section{Orthonormalization of $R$}
+\begin{slide}{Orthonormalization of $R$}{Issue 2: $R$ is a rotation matrix}{
+\item $R = [T\ N\ B]$
+\item The vectors $T$, $N$, and $B$ must be of unit length and orthonormal ($T \cdot N = 0, T \cdot B = 0, \dots$)
+\item As we integrate $R$, this stops being true
+\item $R$ stops being just a rotation matrix, and also incorporates some scale and some skew
+\item This is very bad!
+}\end{slide}
+
+\begin{frame}{Boxes stop being boxes}
+\center
+\includegraphics[height=5cm]{Pics/Kill_me_please.png}
+\end{frame}
+
+\begin{slide}{Orthonormalization of $R$}{Gram-Schimdt method}{
+\item $\hat R = [\hat T\ \hat N\ \hat B]$
+\item We normalize $T = \frac{\hat T}{|\hat T|}$
+\item We remove the projection of $\hat N$ over $T$: $\hat N' = \hat N - \hat N (\hat N \cdot T)$
+\item We normalize $N = \frac{\hat N'}{|\hat N'|}$
+\item We compute $B = T \times N$
+}\end{slide}
+
+\begin{slide}{Orthonormalization of $R$}{Gram-Schimdt method}{
+\item Lot of useless computation
+\item Matrix representation very redundant
+\item $\hat B$ is completely unneeded and is ignored!
+}\end{slide}
+
+\section{Using quaternions}
+\begin{slide}{Using quaternions}{About quaternions}{
+\item We just need a single rotation around an axis (which is an arbitrary rotation in 3D)
+\item Less degrees of freedom means less drift and less need for normalization
+}\end{slide}
+
+\begin{slide}{Using quaternions}{Quaternion primer}{
+\item Let us consider a rotation matrix around the Z axis
+\item $R_0 = \left[ \begin{matrix}
+\cos \theta & -\sin \theta & 0 \\
+\sin \theta & \cos \theta & 0 \\
+0 & 0 & 1\\
+\end{matrix} \right] = 
+\left[ \begin{matrix}
+c & -s & 0 \\
+s & c & 0 \\
+0 & 0 & 1 \\
+\end{matrix} \right]$
+}\end{slide}
+
+\begin{slide}{Using quaternions}{Quaternion primer}{
+\item Any vector $v$ on the XY plane rotated by $R_0$ remains on XY, rotated around Z by an angle $\theta$
+\item Any vector $v$ on the Z axis rotated by $R_0$ remains (identical) on Z
+}\end{slide}
+
+\begin{slide}{Using quaternions}{Quaternion primer}{
+\item Let us transform this rotation into an arbitrary rotation $R_1$ around an axis $d$ and of angle $\theta$
+\item We consider an \textit{orthonormal basis} $a,b,d$
+\item We perform a \textit{basis change} of $R_0$ onto $a,b,d$
+}\end{slide}
+
+\begin{slide}{Using quaternions}{Quaternion primer}{
+\item We need to build $R_1$ such that
+\begin{itemize}
+\item $R_1 a = ca + sb$
+\item $R_1 b = -sa + cb$
+\item $R_1 d = d$
+\end{itemize}
+\item That is $R_1 \underbrace{[a\ b\ d]}_P = \underbrace{[a\ b\ d]}_P R_0$
+\item $P^{-1} = P^T$, so $R_1 = P R_0 P^T = c(aa^T + bb^T) + s(ba^T - ab^T) + dd^T$
+}\end{slide}
+
+\begin{slide}{Using quaternions}{Quaternion primer}{
+\item $R_1 = c(aa^T + bb^T) + s(ba^T - ab^T) + dd^T$
+\item This means that we can now construct a rotation matrix from an axis and an angle
+\item Unfortunately we also need two ``dummy'' vectors $a$ and $b$
+\item Any pair of those suffices, as long as they are correctly related to $d$
+\item We now remove the explicit dependency on them
+}\end{slide}
+
+\begin{slide}{Using quaternions}{Quaternion primer}{
+\item Consider a vector expressed in relationship to $a,b,d$: $v = \underbrace{\alpha}_{a \cdot v} a + \underbrace{\beta}_{b \cdot v} b + \underbrace{\delta}_{d \cdot v} d$
+\item We now consider two arbitrary but useful quantities:
+\item $d \times v = d \times (\alpha a + \beta b + \delta d) = \alpha d \times a + \beta d \times b + \delta d \times d = -\beta a + \alpha b = Dv = \left[ \begin{matrix}
+0 & -d_z & d_y \\
+d_z & 0 & -d_x \\
+-d_y & d_x & 0 \\
+\end{matrix} \right] v$
+\item $d \times (d \times v) = d \times (-\beta a + \alpha b) = -\alpha a - \beta b = D^2v$
+}\end{slide}
+
+\begin{slide}{Using quaternions}{Quaternion primer}{
+\item Now let us study the progression of $Iv, Dv, D^v$
+\item $Iv = v = \alpha a + \beta b + \delta d = aa^Tv + bb^Tv + dd^Tv$, so $I = aa^T + bb^T + dd^T$
+\item $Dv = \alpha b - \beta a = ba^Tv - ab^Tv$, so $D = ba^T-ab^T$
+\item $D^2v = -\alpha a - \beta b = \delta d - v = dd^Tv - v$, so $D^2 = dd^T - I$
+}\end{slide}
+
+\begin{slide}{Using quaternions}{Quaternion primer}{
+\item We combine those three into $R_1 = c(aa^T + bb^T) + s(ba^T - ab^T) + dd^T$
+\item $I = aa^T + bb^T + dd^T$, $D = ba^T-ab^T$, $D^2 = dd^T - I$
+\pause 
+\item $R_1 = c(I - dd^T) + sD + dd^T$
+\item $R_1 = I + sD + (1-c)D^2$
+}\end{slide}
+
+\begin{slide}{Using quaternions}{Quaternion primer}{
+\item We can now compute $R_1 = I + sD + (1-c)D^2$ from just $d, \theta$
+\item Moreover, we can rotate a vector without even building $R_1$
+\begin{eqnarray}
+R_1v &=& (I + s D + (1-c)D^2)v \\
+&=& Iv + s D v + (1-c)D^2 v \\
+&=& v + s d\times v + (1-c)d \times (d \times v)
+\end{eqnarray}
+}\end{slide}
+
+\begin{slide}{Using quaternions}{Quaternion primer}{
+\item Any representation of $d$ and $\theta$ would be fine
+\item A particularly convenient one is $[\cos \frac{\theta}{2}, \sin \frac{\theta}{2} d]$
+}\end{slide}
+
+\section{Time derivative of a quaternion}
+\begin{slide}{Deriving quaternions}{Derivative of rotation matrix}{
+\item We studied how to compute $\dot R$ from $R$ and $\omega$
+\item If we represent rotations with quaternions, we need to compute $\dot q$
+}\end{slide}
+
+\begin{slide}{Deriving quaternions}{Derivative of quaternion}{
+\item Given the current orientation $q(t_0)$ and angular velocity $\omega(t_0)$
+\item Assuming very small $t-t_0$
+\item The derivative of the original quaternion is $\frac{d}{dt}\underbrace{[\cos \frac{|\omega(t_0)|(t-t_0)}{2}, \frac{\omega(t_0)}{|\omega(t_0)|} \sin \frac{|\omega(t_0)|(t-t_0)}{2}]}_{\omega \text{ converted to a quaternion}} q(t_0)$
+}\end{slide}
+
+\begin{slide}{Deriving quaternions}{Derivative of quaternion}{
+\item $\frac{d}{dt}[\cos \frac{|w(t_0)|(t-t_0)}{2}, \frac{w(t_0)}{|w(t_0)|} \sin \frac{|w(t_0)|(t-t_0)}{2}] q(t_0)$
+\item We now derive the $w$ part ($q(t_0)$ is a constant) and replace $t$ with $t_0$ because we want to know the value of the derivative at the current time $t_0$
+\item $[-\frac{|\omega(t_0)|}{2} \sin \frac{|\omega(t_0)|(t_0-t_0)}{2}, \frac{\omega(t_0)}{|\omega(t_0)|} \frac{|\omega(t_0)|}{2} \cos \frac{|\omega(t_0)|(t-t_0)}{2}] q(t_0)$
+\item $[-\frac{|\omega(t_0)|}{2} \sin 0, \frac{\omega(t_0)}{|\omega(t_0)|} \frac{|\omega(t_0)|}{2} \cos 0] q(t_0)$
+\item $[0, \frac{\omega(t_0)}{2}] q(t_0) = \frac{1}{2} [0, \omega(t_0)] q(t_0)$
+}\end{slide}
+
+\begin{slide}{Deriving quaternions}{Derivative of quaternion}{
+\item At least remember this:
+\item $\dot q = \frac{1}{2} [0, \omega] q$
+}\end{slide}
+
+\section{Kinematics source code}
+\begin{frame}[fragile]{Kinematics source code}
+\begin{lstlisting}
+// initialization 
+RigidBody* body[n]; 
+double t = <your choice of initial time>; 
+double dt = <your choice of time step>; 
+for (int i = 0; i < n; ++i) { 
+  // Set the initial state of the rigid bodies. 
+  body[i] = new RigidBody(...);
+
+// Part of the physics tick. 
+for (i = 0; i < n; ++i) { 
+  body[i].Update(t, dt);
+  t += dt;
+}
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Kinematics source code}
+\begin{lstlisting}
+struct RigidBody {
+  RigidBody (double m, matrix inertia, Function force, Function torque);
+
+  // force/torque function format 
+  typedef vector ( *Function ) (
+    double, // time of application
+    point, // position
+    quaternion, // orientation
+    ... // whole state of body, one var at a time
+    )
+  );
+
+  // Runge-Kutta fourth order differential equation solver 
+  void Update (double t, double dt);
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Kinematics source code}
+\begin{lstlisting}
+protected: 
+  // convert (Q,P,L) to (R,V,W) 
+  void Convert (quaternion Q, vector P, vector L, matrix& R, vector& V, vector& W) const;
+  // constant quantities 
+  double m_mass, m_invMass; 
+  matrix m_inertia, m_invInertia;
+  // state variables 
+  vector m_X; // position 
+  quaternion m_Q; // orientation 
+  vector m_P; // linear momentum 
+  vector m_L; // angular momentum
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Kinematics source code}
+\begin{lstlisting}
+  // derived state variables 
+  matrix m_R; // orientation matrix 
+  vector m_V; // linear velocity vector 
+  m_W; // angular velocity
+  // force and torque functions 
+  Function m_force; Function m_torque;
+};
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Kinematics source code}
+\begin{lstlisting}
+void RigidBody::Convert (quaternion Q, vector P, vector L, matrix& R, vector& V, vector& W) const { 
+  Q.ToRotationMatrix(R); 
+  V = m_invMass*P; 
+  W = R*m_invInertia*Transpose(R)*L; 
+}
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Kinematics source code}
+\begin{lstlisting}
+void RigidBody::Update (double t, double dt) { 
+  double halfdt = 0.5 * dt, sixthdt = dt / 6.0;
+  double tphalfdt = t + halfdt, tpdt = t + dt;
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Kinematics source code}
+\begin{lstlisting}
+  vector XN, PN, LN, VN, WN; 
+  quaternion QN; 
+  matrix RN;
+  // A1 = G(t,S0), B1 = S0 + (dt / 2) * A1 
+  vector A1DXDT = m_V; 
+  quaternion A1DQDT = 0.5 * m_W * m_Q; 
+  vector A1DPDT = m_force(t,m_X,m_Q,m_P,m_L,m_R,m_V,m_W); 
+  vector A1DLDT = m_torque(t,m_X,m_Q,m_P,m_L,m_R,m_V,m_W); 
+  XN = m_X + halfdt * A1DXDT; 
+  QN = m_Q + halfdt * A1DQDT; 
+  PN = m_P + halfdt * A1DPDT; 
+  LN = m_L + halfdt * A1DLDT; 
+  Convert(QN,PN,LN,RN,VN,WN);
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Kinematics source code}
+\begin{lstlisting}
+  // A2 = G(t + dt / 2,B1), B2 = S0 + (dt / 2) * A2 
+  vector A2DXDT = VN; 
+  quaternion A2DQDT = 0.5 * WN * QN; 
+  vector A2DPDT = m_force(tphalfdt,XN,QN,PN,LN,RN,VN,WN); 
+  vector A2DLDT = m_torque(tphalfdt,XN,QN,PN,LN,RN,VN,WN); 
+  XN = m_X + halfdt * A2DXDT; 
+  QN = m_Q + halfdt * A2DQDT; 
+  PN = m_P + halfdt * A2DPDT; 
+  LN = m_L + halfdt * A2DLDT; 
+  Convert(QN,PN,LN,RN,VN,WN);
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Kinematics source code}
+\begin{lstlisting}
+  // A3 = G(t + dt / 2,B2), B3 = S0 + dt * A3 
+  vector A3DXDT = VN; 
+  quaternion A3DQDT = 0.5 * WN * QN;
+
+  vector A3DPDT = m_force(tphalfdt,XN,QN,PN,LN,RN,VN,WN); 
+  vector A3DLDT = m_torque(tphalfdt,XN,QN,PN,LN,RN,VN,WN); 
+  XN = m_X + dt * A3DXDT; 
+  QN = m_Q + dt * A3DQDT; 
+  PN = m_P + dt * A3DPDT; 
+  LN = m_L + dt * A3DLDT; 
+  Convert(QN,PN,LN,RN,VN,WN);
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Kinematics source code}
+\begin{lstlisting}
+  // A4 = G(t + dt,B3), 
+  // S1 = S0 + (dt / 6) * (A1 + 2 * A2 + 2 * A3 + A4) 
+  vector A4DXDT = VN; 
+  quaternion A4DQDT = 0.5 * WN * QN; 
+  vector A4DPDT = m_force(tpdt,XN,QN,PN,LN,RN,VN,WN); 
+  vector A4DLDT = m_torque(tpdt,XN,QN,PN,LN,RN,VN,WN); 
+  m_X = m_X + sixthdt*(A1DXDT + 2.0*(A2DXDT + A3DXDT) + A4DXDT); 
+  m_Q = m_Q + sixthdt*(A1DQDT + 2.0*(A2DQDT + A3DQDT) + A4DQDT); 
+  m_P = m_P + sixthdt*(A1DPDT + 2.0*(A2DPDT + A3DPDT) + A4DPDT); 
+  m_L = m_L + sixthdt*(A1DLDT + 2.0*(A2DLDT + A3DLDT) + A4DLDT); 
+  Convert(m_Q,m_P,m_L,m_R,m_V,m_W);
+}
+\end{lstlisting}
+\end{frame}
+
+
+\begin{frame}{That's it}
+\center
+\fontsize{18pt}{7.2}\selectfont
+Thank you!
+\end{frame}
+
+\end{document}

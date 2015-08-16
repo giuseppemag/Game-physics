@@ -1,0 +1,109 @@
+\documentclass{beamer}
+\usetheme{Warsaw}
+\usepackage{nhtvslides}
+\usepackage{graphicx}
+\usepackage{listings}
+\lstset{language=CAML,
+basicstyle=\ttfamily\footnotesize,
+frame=shadowbox,
+breaklines=true}
+\usepackage[utf8]{inputenc}
+
+\title{Building a physics engine - part 1: architecture}
+
+\author{Dr. Giuseppe Maggiore}
+
+\institute{NHTV University of Applied Sciences \\ 
+Breda, Netherlands}
+
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Physics engine basics}
+\begin{slide}{Physics engine basics}{Main goals}{
+\item Apply Newton's law of motion $F = ma$ to linear and rotational movement (easy)
+\item Ensure no interpenetration of moving objects (absolutely \textbf{not easy})
+}\end{slide}
+
+\begin{slide}{Physics engine basics}{Interpenetration avoidance}{
+\item Find pairs of touching objects
+\item Find time of contact
+\item Find points of contact
+\item Apply forces to ensure no interpenetration/stacking/etc.
+}\end{slide}
+
+\begin{slide}{Physics engine basics}{Finding colliding pairs}{
+\item Broad-phase collision detection with AABBs
+\item Medium-phase collision detection with bounding volumes (BS, OBB)
+\item Narrow-phase collision detection to find exact time and points of contact
+}\end{slide}
+
+\begin{slide}{Physics engine basics}{Collision response}{
+\item Between pairs of objects: easy, just apply the laws of conservation of momentum
+\item How about between multiple objects, maybe even stacked?
+\item Solving in pairs does not work!
+\item We need to solve all of these constraints at the same time
+}\end{slide}
+
+\begin{slide}{Physics engine basics}{Collision response and constraints}{
+\item Collision response balances external forces and velocities; it applies to multiple kinds of constraints:
+\begin{itemize}
+\item Contact constraints (the obvious ones)
+\item Distance constraints
+\item Friction constraints
+\item ...
+\end{itemize}
+}\end{slide}
+
+\begin{frame}[fragile]{General layout of a physics engine}
+\begin{lstlisting}
+physics.Initialize:
+  setup AABB, BV (BS and others), BSP/Gauss maps, other support data structures
+  
+physics.Tick:
+  update AABBs
+  find AABBs intersections
+  refine AABBs intersections with BV tests (optional)
+  separating axes collision detection
+  resolve physics constraints
+    contacts
+    friction
+    distance
+    ...
+  apply kinematics
+\end{lstlisting}
+\end{frame}
+
+\section{Assignment}
+\begin{slide}{Assignment}{Assignment}{
+\item Before the end of next week
+\item Group-work archive/video on Natschool or uploaded somewhere else and linked in your report
+\item Individual report by each of you on Natschool
+\item Build a kinematics simulator with movement and rotation, with RK2 or RK4
+}\end{slide}
+
+\begin{frame}{That's it}
+\center
+\fontsize{18pt}{7.2}\selectfont
+Thank you!
+\end{frame}
+
+\end{document}
+
+
+\begin{slide}{SECTION}{SLIDE}{
+\item i
+}\end{slide}
+
+\begin{frame}[fragile]{SLIDE}
+\begin{lstlisting}
+CODE
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}{SLIDE}
+\center
+%\includegraphics[height=5cm]{Pics/recursive_multiplier.png}
+\end{frame}

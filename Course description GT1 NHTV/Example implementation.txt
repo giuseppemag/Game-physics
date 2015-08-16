@@ -1,0 +1,15 @@
+You can find example implementations of some of the assignments in the website
+
+https://casanova.codeplex.com/
+
+under the tab
+
+DOWNLOADS
+
+Pick the archive named 
+
+PHYSICS SAMPLES 
+
+
+
+Remember to install OpenAL. The easiest (and recommended) way is to install the latest version of MonoGame, which sets up all the needed dependencies.

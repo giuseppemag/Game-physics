@@ -1,0 +1,178 @@
+\documentclass{beamer}
+\usetheme{Warsaw}
+\usepackage{nhtvslides}
+\usepackage{graphicx}
+\usepackage{listings}
+\lstset{language=CAML,
+basicstyle=\ttfamily\footnotesize,
+frame=shadowbox,
+breaklines=true}
+\usepackage[utf8]{inputenc}
+
+\title{Building a physics engine - part 5: various forces}
+
+\author{Dr. Giuseppe Maggiore}
+
+\institute{NHTV University of Applied Sciences \\ 
+Breda, Netherlands}
+
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{frame}{Table of contents}
+\tableofcontents
+\end{frame}
+
+\section{Gravity}
+\begin{slide}{Gravity}{Gravity}{
+\item The easiest :)
+\item $F_G = \frac{G m_1 M_2}{r^2}$ $G=6.67384 10^{-11} m^3 kg^{-1} s^{-2}$
+\item On the surface of a planet, $F=ma$, where $a = \frac{G m_2}{r^2}$; for example, $a = g = 9.81$
+}\end{slide}
+
+\section{Friction}
+\begin{slide}{Friction}{Friction}{
+\item Friction is related to the \textit{normal force}
+\item $F_N = m g \cos \theta$
+\item $F_F = \mu F_N$, where $\mu$ depends on the materials
+\item When not moving, static friction applies $\mu_S$
+\item When moving, dynamic friction applies $\mu_K$
+\item $\mu_K < \mu_S$
+}\end{slide}
+
+% TABLE OF FRICTIONS AND MATERIALS
+
+\section{Springs}
+\begin{slide}{Springs}{Springs}{
+\item Hooke's Law
+\item $F_S = -k \Delta l$
+}\end{slide}
+
+% FIG 3.7
+
+\section{Centripetal force}
+\begin{slide}{Centripetal force}{Centripetal force}{
+\item During a circular movement
+\item Force towards the center of the circle
+\item $F_C = \frac{m v^2}{r}$
+}\end{slide}
+
+\section{Projectiles}
+\begin{slide}{Projectiles}{Projectiles}{
+\item A projectile is influenced by
+\begin{itemize}
+\item Gravity
+\item Aerodynamic drag
+\item Laminar and turbulent flow
+\item Wind effects
+\item Spin effects
+\item Projectile geometry and mass
+\end{itemize}
+}\end{slide}
+
+\begin{slide}{Projectiles}{Aerodynamic drag}{
+\item $F_D = \frac{1}{2} \rho v^2 A C_D$
+\begin{itemize}
+\item $\rho$ is the fluid density
+\item $A$ is the body area
+\item $C_D$ is the drag coefficient
+\end{itemize}
+}\end{slide}
+
+\begin{slide}{Projectiles}{$C_D$}{
+\item Drag is a force applied against motion $-\frac{v}{|v|}$
+\item The drag coefficient depends on the \textit{Reynolds number}
+\item $C_D = f(Re)$ for some complex function $f$
+\item $Re = \frac{\rho v L}{\mu}$
+\begin{itemize}
+\item $L$ is the projectile length
+\item $\mu$ is the drag coefficient
+\end{itemize}
+}\end{slide}
+
+% FIG 5-6
+% FIG 5-3
+
+\begin{slide}{Projectiles}{Air density}{
+\item Depends on altitude
+}\end{slide}
+
+% TAB 5-4
+
+\begin{slide}{Projectiles}{Laminar vs turbulent flow}{
+\item Depending on the speed, the air travels over the surfaces of the projectile
+\item At low Reynolds numbers, flow is laminar
+\item At around $Re = 250000$ the switch occurs (for a golf ball and similar projectiles)
+\item At high Reynolds numbers, flow is turbulent
+\item We store at least two $C_D$ coefficients per object
+}\end{slide}
+
+\begin{slide}{Projectiles}{Wind}{
+\item Wind simply changes the \textit{apparent velocity}
+\item All other computations simply use the apparent velocity
+\item $v_{\text{apparent}} = v - v_{\text{wind}}$
+}\end{slide}
+
+\begin{slide}{Projectiles}{Spin effects}{
+\item When an object is spinning, the velocity difference between the top and bottom surfaces given by spinning causes acceleration
+\item This is known as the \textit{Magnus Effect} or \textit{Robin's Effect}
+}\end{slide}
+
+% FIG 5-14
+
+\begin{slide}{Projectiles}{Spin effects}{
+\item $F_M = \frac{1}{2} \rho v^2 A C_L$
+\item $C_L = \frac{r w}{v}$ for a sphere
+\item $C_L = \frac{2 \pi r w}{v}$ for a cylinder
+\item Direction of force is $\frac{v \times w}{|v \times w|}$
+}\end{slide}
+
+\begin{slide}{Projectiles}{Bullets}{
+\item Rotation axis is horizontal
+\item Almost zeroes $\frac{v \times w}{|v \times w|}$
+\item Magnus Effect can be ignored
+\item $C_D = 0.3$ is a reasonable constant
+}\end{slide}
+
+% TAB 5-6
+
+\begin{slide}{Projectiles}{Cannonballs}{
+\item Start with a velocity between $260m/s$ and $344m/s$
+\item Weight is between $2kg$ and $10kg$
+\item $C_D = 0.3$ is a reasonable constant
+}\end{slide}
+
+
+\section{Assignment}
+\begin{slide}{Assignment}{Assignment}{
+\item Before the end of next week
+\item Group-work archive/video on Natschool or uploaded somewhere else and linked in your report
+\item Individual report by each of you on Natschool
+\item Add a personalized selection of forces to your simulator
+}\end{slide}
+
+\begin{frame}{That's it}
+\center
+\fontsize{18pt}{7.2}\selectfont
+Thank you!
+\end{frame}
+
+\end{document}
+
+
+\begin{slide}{SECTION}{SLIDE}{
+\item i
+}\end{slide}
+
+\begin{frame}[fragile]{SLIDE}
+\begin{lstlisting}
+CODE
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}{SLIDE}
+\center
+%\includegraphics[height=5cm]{Pics/recursive_multiplier.png}
+\end{frame}

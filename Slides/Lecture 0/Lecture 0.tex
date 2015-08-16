@@ -1,0 +1,85 @@
+\documentclass{beamer}
+\usetheme{Warsaw}
+\usepackage{nhtvslides}
+\usepackage{graphicx}
+\usepackage{listings}
+\lstset{language=CAML,
+basicstyle=\ttfamily\footnotesize,
+frame=shadowbox,
+breaklines=true}
+\usepackage[utf8]{inputenc}
+
+\title{Syllabus}
+
+\author{Dr. Giuseppe Maggiore}
+
+\institute{NHTV University of Applied Sciences \\ 
+Breda, Netherlands}
+
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{slide}{Syllabus}{List of topics}{
+\item \textbf{Topic 1 - basic concepts from physics}: translational and rotational Newtonian physics, numerical integration, equations of motion for a system of bodies
+\item \textbf{Topic 2 - narrow phase of collision detection}: separating axis, collision response
+\item \textbf{Topic 3 - broad phase of collision detection}: axis aligned bounding boxes, bounding spheres, etc.
+\item \textbf{Topic 4 - simultaneous resolution of multiple constraints}: constraints as a system of equations, the Gauss-Seidel method
+\item \textbf{Topic 5 - force computation}: ballistic forces (Magnusson, friction, gravity), car forces, plane forces, etc. 
+}\end{slide}
+
+\begin{slide}{Syllabus}{List of topics}{
+\item \textbf{Optional topic 1 - preprocessing of models for collision detection} BSP for faster collision detection
+\item \textbf{Optional topic 2 - preprocessing of generic models} calculating the \textit{inertia tensor} of arbitrary polytopes
+}\end{slide}
+
+\begin{slide}{Syllabus}{List of materials}{
+\item The book \textit{Game Physics - Second Edition}, by David Eberly
+\item The book \textit{Physics for game programmers}, by Grant Palmer
+\item The paper \textit{Iterative Dynamics with Temporal Coherence}, by Erin Catto 
+\item The tutorial \textit{Car physics for games}, by Marco Monster
+\item The Siggraph '97 course notes \textit{An Introduction to Physically Based Modeling: Rigid Body Simulation I - Unconstrained Rigid Body Dynamics} by David Baraff 
+}\end{slide}
+
+\begin{slide}{Syllabus}{Assignments}{
+\item Due
+\begin{itemize}
+\item The end of the week after presentation in class (possible time bonus)
+\item All together at the end of the course
+\end{itemize}
+\item Group work for coding (max three students)
+\item Individual work for the report (what will actually be graded)
+}\end{slide}
+
+\begin{slide}{Syllabus}{List of assignments}{
+\item Build a basic kinematic simulator with RK2 or RK4 (20\%)
+\item SAT/contact manifold computation (at least for OBBs, better for arbitrary meshes) (20\%)
+\item Collision culling with bounding spheres, AABBs, and bins (20\%)
+\item Collision response (20\%)
+\item Forces for domain-specific scenarios (20\%)
+}\end{slide}
+
+\begin{frame}{That's it}
+\center
+\fontsize{18pt}{7.2}\selectfont
+Thank you!
+\end{frame}
+
+\end{document}
+
+
+\begin{slide}{SECTION}{SLIDE}{
+\item i
+}\end{slide}
+
+\begin{frame}[fragile]{SLIDE}
+\begin{lstlisting}
+CODE
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}{SLIDE}
+\center
+%\includegraphics[height=5cm]{Pics/recursive_multiplier.png}
+\end{frame}

@@ -1,0 +1,76 @@
+\documentclass{beamer}
+\usetheme{Warsaw}
+\usepackage{nhtvslides}
+\usepackage{graphicx}
+\usepackage{listings}
+\lstset{language=CAML,
+basicstyle=\ttfamily\footnotesize,
+frame=shadowbox,
+breaklines=true}
+\usepackage[utf8]{inputenc}
+
+\title{Missing pieces}
+
+\author{Dr. Giuseppe Maggiore}
+
+\institute{NHTV University of Applied Sciences \\ 
+Breda, Netherlands}
+
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{slide}{An actual physics engine?}{Points of difference}{
+\item How far are we from an actual, commercial engine?
+\item Turns out, not very
+\item There are some topics we did not touch
+\item Some others that we did not deepen enough
+\item All in all, what you have seen so far is the hard core of a physics engine
+}\end{slide}
+
+\begin{slide}{An actual physics engine?}{Points of difference}{
+\item GJK vs SAT
+\pause
+\item Constant rotational velocity
+\pause
+\item SAT with BSP for the meshes
+\pause
+\item Inertia tensor derivation
+\begin{itemize}
+\item For known shapes
+\item For arbitrary meshes
+\end{itemize}
+\pause
+\item Inverse kinematics
+\begin{itemize}
+\item Standalone
+\item Within the collision response system
+\end{itemize}
+}\end{slide}
+
+\begin{frame}{That's it}
+\begin{block}{\center The course is over}
+\center
+\fontsize{18pt}{7.2}\selectfont
+Thank you!
+\end{block}
+\end{frame}
+
+\end{document}
+
+
+\begin{slide}{SECTION}{SLIDE}{
+\item i
+}\end{slide}
+
+\begin{frame}[fragile]{SLIDE}
+\begin{lstlisting}
+CODE
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}{SLIDE}
+\center
+%\includegraphics[height=5cm]{Pics/recursive_multiplier.png}
+\end{frame}
